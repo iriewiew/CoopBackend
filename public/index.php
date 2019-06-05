@@ -40,12 +40,12 @@
 			<div style="margin-top:10mm;">
 				<h3 style="font-weight:bold; text-align: center;">ส่วนที่ 3</h3>
 			</div>
-			การวิเคราะห์ข้อมูลของผู้เข้าร่วม<b> <?= $event_name["event_name"] ?> </b>จากผลการสำรวจแบบสอบถามความคิด
+			การวิเคราะห์ข้อมูลของผู้เข้าร่วม<b> <?php $event_name["event_name"] ?> </b>จากผลการสำรวจแบบสอบถามความคิด
 
-			จำนวน <?= $rs["total"] ?> ฉบับ ได้รับข้อมูลกลับคืน จำนวน <?= $rs["total"] ?> ฉบับ คิดเป็นร้อยละ 100% ซึ่งเป็นแบบสอบถามความคิดเห็นต่อโครงการข้างต้น จำแนกออกเป็น 3 ตอนดังนี้
+			จำนวน <?php $rs["total"] ?> ฉบับ ได้รับข้อมูลกลับคืน จำนวน <?php $rs["total"] ?> ฉบับ คิดเป็นร้อยละ 100% ซึ่งเป็นแบบสอบถามความคิดเห็นต่อโครงการข้างต้น จำแนกออกเป็น 3 ตอนดังนี้
 			<p style="margin-top:10mm;">
 				<b>ตอนที่ ๑ </b>ข้อมูลพื้นฐาน <br />
-				<b>ตอนที่ ๒ </b>ความคิดเห็นที่มีต่อ "<?= $event_name["event_name"] ?>" <br />
+				<b>ตอนที่ ๒ </b>ความคิดเห็นที่มีต่อ "<?php $event_name["event_name"] ?>" <br />
 				<b>ตอนที่ ๓ </b>ข้อเสนอแนะ
 			</p>
 
@@ -70,8 +70,8 @@
 						$no++;
 						?>
 						<tr>
-							<td><?= $no ?>) <?= $results["faculty_name"] ?></td>
-							<td class="text-center"><?= $results["total"] ?></td>
+							<td><?php $no ?>) <?php $results["faculty_name"] ?></td>
+							<td class="text-center"><?php $results["total"] ?></td>
 							<td class="text-center">
 								<?php
 								$persent = ($results["total"] / $rs["total"]) * 100;
@@ -86,7 +86,7 @@
 				<tfoot>
 					<tr class="text-center">
 						<th>รวม</th>
-						<th><?= $rs["total"] ?></th>
+						<th><?php $rs["total"] ?></th>
 						<th>100</th>
 					</tr>
 				</tfoot>
@@ -94,7 +94,7 @@
 
 			<div>
 				<p>
-					จากตารางที่ ๑ แสดงให้เห็นถึงจำนวนของผู้ตอบแบบสอบถามรวมทั้งสิ้น <?= $rs["total"] ?> คน ลักษณะข้อมูลทั่วไปของผู้ตอบแบบสอบถามสังกัดคณะ
+					จากตารางที่ ๑ แสดงให้เห็นถึงจำนวนของผู้ตอบแบบสอบถามรวมทั้งสิ้น <?php $rs["total"] ?> คน ลักษณะข้อมูลทั่วไปของผู้ตอบแบบสอบถามสังกัดคณะ
 				</p>
 				<?php
 				$query = mysqli_query($conn, "SELECT faculty_name, COUNT(*) AS total FROM evaluationreportdetail e INNER JOIN faculty f ON f.id=e.faculty_id WHERE event_id =$event_id GROUP BY faculty_id ORDER BY total DESC");
@@ -127,7 +127,7 @@
 				}
 				?>
 				<p>
-					<?= $text ?>
+					<?php $text ?>
 				</p>
 			</div>
 
@@ -140,8 +140,8 @@
 				$no = 1;
 				?>
 				<div style="margin-top:10mm;">
-					<span style="margin-top:10mm;"><b>ตอนที่ <?= $num ?> ผลการวิเคราะห์<?= $results["eva_titile_name"] ?>ของการจัดโครงการ ฯ ดังนี้</b> </span><br />
-					<span>ตารางที่ <?= $num ?> ผลการวิเคราะห์<?= $results["eva_titile_name"] ?>ของผู้เข้าร่วมโครงการ ฯ</span><br />
+					<span style="margin-top:10mm;"><b>ตอนที่ <?php $num ?> ผลการวิเคราะห์<?php $results["eva_titile_name"] ?>ของการจัดโครงการ ฯ ดังนี้</b> </span><br />
+					<span>ตารางที่ <?php $num ?> ผลการวิเคราะห์<?php $results["eva_titile_name"] ?>ของผู้เข้าร่วมโครงการ ฯ</span><br />
 					<table class="table table-bordered" width="100%" style="margin-top:2mm;">
 						<thead>
 							<tr class="table-primary text-center">
@@ -159,9 +159,9 @@
 							while ($res = mysqli_fetch_assoc($q)) {
 								?>
 								<tr>
-									<td class="text-center"><?= $no ?></td>
-									<td><?= $res["eva_list_name"] ?></td>
-									<td class="text-center"><?= number_format($res["total"], 2) ?></td>
+									<td class="text-center"><?php $no ?></td>
+									<td><?php $res["eva_list_name"] ?></td>
+									<td class="text-center"><?php number_format($res["total"], 2) ?></td>
 									<td class="text-center">
 										<?php
 										$qs = mysqli_query($conn, "SELECT STDDEV(ep.eva_point) AS sd FROM evaluationreport ep LEFT JOIN evaluationlist ed ON ep.eva_list_id=ed.id WHERE ep.eva_titile_name_id = {$results["id"]} AND event_id=$event_id AND ep.eva_list_id={$res["eva_list_id"]}");
@@ -268,7 +268,7 @@
 				<tbody>
 					<tr>
 						<td class="text-center">1</td>
-						<td>ผู้เข้าร่วมกิจกรรม ไม่น้อยกว่าร้อยละ <?= $achieve_point["eva_achieve_point"] ?> </td>
+						<td>ผู้เข้าร่วมกิจกรรม ไม่น้อยกว่าร้อยละ <?php $achieve_point["eva_achieve_point"] ?> </td>
 						<td class="text-center">
 							<?php
 							$query = mysqli_query($conn, "SELECT COUNT(*) AS total_join FROM evaluationreportdetail WHERE event_id = $event_id");
@@ -280,7 +280,7 @@
 						</td>
 						<td class="text-center">
 
-							<?= $persent >= $achieve_point["eva_achieve_point"] ? "บรรลุ" : "ไม่บรรลุ" ?>
+							<?php $persent >= $achieve_point["eva_achieve_point"] ? "บรรลุ" : "ไม่บรรลุ" ?>
 						</td>
 					</tr>
 					<?php
@@ -289,8 +289,8 @@
 					while ($cate = mysqli_fetch_assoc($query)) {
 						?>
 						<tr>
-							<td class="text-center"><?= $no ?></td>
-							<td>นักศึกษาที่เข้าร่วมมี<?= str_replace("ด้าน", "", $cate["eva_titile_name"]) ?>ไม่น้อยกว่าร้อยละ <?= $cate["eva_titile_achieve_point"] ?></td>
+							<td class="text-center"><?php $no ?></td>
+							<td>นักศึกษาที่เข้าร่วมมี<?php str_replace("ด้าน", "", $cate["eva_titile_name"]) ?>ไม่น้อยกว่าร้อยละ <?php $cate["eva_titile_achieve_point"] ?></td>
 							<td class="text-center">
 								<?php
 								$n_query = mysqli_query($conn, "SELECT COUNT(*) AS total FROM evaluationlist WHERE eva_titile_name_id={$cate["id"]}");
