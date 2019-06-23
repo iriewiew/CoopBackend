@@ -23,7 +23,7 @@
       <h1></h1>
       <v-spacer></v-spacer>
     </v-card-title>
-    <v-form>
+   <v-form>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
@@ -110,33 +110,39 @@
             ></v-text-field>
           </v-flex>
 
-          <v-flex xs12 md3>
-            <v-select
-              item-text="name"
-              item-value="id"
-              v-model="form.status"
-              :items="title"
-              label="สถานะกิจกรรม"
-              v-validate="'required'"
-              :error-messages="errors.collect('status')"
-              data-vv-name="status"
+          <v-flex xs12>
+            <v-textarea
+              v-model="form.event_detail"
+              label="รายละเอียดกิจกรรม"
+              value="event_detail"
+              v-validate="'required|'"
+              :error-messages="errors.collect('event_detail')"
+              data-vv-name="event_detail"
               required
-            />
+            ></v-textarea>
           </v-flex>
-          <v-flex xs12 md3>
-            <v-select
-              item-text="name"
-              item-value="id"
-              v-model="form.event_eva_status"
-              :items="eva_title"
-              label="สถานะการประเมิน"
-              v-validate="'required'"
-              :error-messages="errors.collect('event_eva_status')"
-              data-vv-name="event_eva_status"
+          <br>
+          <!-- <v-btn @click="clear">clear</v-btn> -->
+          <v-toolbar flat>
+            <v-card-title>
+              <h1>การตั้งค่ากิจกรรม</h1>
+              <v-spacer></v-spacer>
+            </v-card-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+
+          <v-flex xs12>
+            <v-text-field
+              v-model="form.event_limit"
+              label="จำนวนผู้เข้าร่วม"
+              suffix="คน"
+              v-validate="'required|numeric'"
+              :error-messages="errors.collect('event_limit')"
+              data-vv-name="event_limit"
               required
-            />
+            ></v-text-field>
           </v-flex>
-          <v-flex xs12 md3>
+          <v-flex xs12>
             <v-select
               item-text="eva_name"
               item-value="id"
@@ -149,31 +155,32 @@
               required
             />
           </v-flex>
-          <v-flex xs12 md3>
-            <v-text-field
-              v-model="form.event_limit"
-              label="จำนวนผู้เข้าร่วม"
-              suffix="คน"
-              v-validate="'required|numeric'"
-              :error-messages="errors.collect('event_limit')"
-              data-vv-name="event_limit"
-              required
-            ></v-text-field>
-          </v-flex>
-
           <v-flex xs12>
-            <v-textarea
-              v-model="form.event_detail"
-              label="รายละเอียดกิจกรรม"
-              value="event_detail"
-              v-validate="'required|'"
-              :error-messages="errors.collect('event_detail')"
-              data-vv-name="event_detail"
+            <v-select
+              item-text="name"
+              item-value="id"
+              v-model="form.status"
+              :items="title"
+              label="สถานะกิจกรรม"
+              v-validate="'required'"
+              :error-messages="errors.collect('status')"
+              data-vv-name="status"
               required
-            ></v-textarea>
+            />
           </v-flex>
-
-          <!-- <v-btn @click="clear">clear</v-btn> -->
+          <v-flex xs12>
+            <v-select
+              item-text="name"
+              item-value="id"
+              v-model="form.event_eva_status"
+              :items="eva_title"
+              label="สถานะการประเมิน"
+              v-validate="'required'"
+              :error-messages="errors.collect('event_eva_status')"
+              data-vv-name="event_eva_status"
+              required
+            />
+          </v-flex>
         </v-layout>
       </v-container>
     </v-form>

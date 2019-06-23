@@ -82,7 +82,7 @@
       </v-container>
     </v-form>
     <br>
-
+<v-container>
     <v-layout row>
       <v-flex xs12>
         <v-card>
@@ -110,6 +110,7 @@
         </v-card>
       </v-flex>
     </v-layout>
+</v-container>
   </v-app>
 </template>
 <script>

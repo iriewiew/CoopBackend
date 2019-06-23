@@ -9,7 +9,9 @@ import "moment/locale/th";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import VeeValidate from 'vee-validate';
+import VueQrcode from '@chenfengyuan/vue-qrcode';
 
+Vue.component(VueQrcode.name, VueQrcode);
 const config = {
   aria: true,
   classNames: {},

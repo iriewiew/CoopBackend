@@ -191,7 +191,23 @@ export default {
           )
         )
         .catch(err => {
-          console.log(err.response);
+          if (err.response.status == 401) {
+            Swal.fire({
+              type: "warning",
+              title: "เซสชั่นหมดอายุแล้ว",
+              text: "กรุณาเข้าสู่ระบบใหม่",
+              showConfirmButton: true
+            });
+            localStorage.clear();
+            this.$store.state.getApiData.tokenkey = null;
+          }
+          if (err.response.status == 404) {
+            Swal.fire({
+              type: "warning",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: true
+            });
+          }
         });
     },
     dialogDel: function() {

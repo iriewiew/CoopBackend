@@ -46,16 +46,16 @@
         <td>
           <v-chip outline color="blue">{{props.item.updatedAt | moment("from", "now")}}</v-chip>
         </td>
-        <!-- <td class="text-xs-right">
+        <td class="text-xs-right">
           <v-btn
             flat
             icon
             color="gray"
-            
+            @click="(sendNotify.fcm.notification.body = props.item.notification_msg ,sendNotify.fcm.notification.id = props.item.id),dialogSend() "
           >
             <v-icon>refresh</v-icon>
           </v-btn>
-        </td> -->
+        </td>
         <td class="text-xs-right">
           <v-btn
             flat
@@ -76,6 +76,7 @@
         </td>
       </template>
     </v-data-table>
+
   </v-app>
 </template>
 
@@ -93,8 +94,17 @@ export default {
       rowsPerPageItems: [9, 18, 27, 32, 99],
       pagination: {
         rowsPerPage: 9,
-                descending: true,
+        descending: true,
         sortBy: "updatedAt"
+      },
+      sendNotify: {
+        interests: ["hello"],
+        fcm: {
+          notification: {
+            title: "ศูนย์สหกิจศึกษา",
+            body: ""
+          }
+        }
       },
       selectedData: { id: "", name: "" },
       headers: [
@@ -105,12 +115,43 @@ export default {
         },
         { text: "รายการแจ้งเตือนล่าสุด", value: "notification_msg" },
         { text: "ส่งครั้งล่าสุดเมื่อ", value: "null", sortable: false },
-
+        { text: "ส่งอีกครั้ง", align: "right", value: "null", sortable: false },
         { text: "จัดการ", align: "right", value: "null", sortable: false }
       ]
     };
   },
   methods: {
+    notifiSend: function() {
+      let apiURL =
+        "https://2542e143-54b2-497e-b818-91fbffc77642.pushnotifications.pusher.com/publish_api/v1/instances/2542e143-54b2-497e-b818-91fbffc77642/publishes";
+      let setting = {
+        headers: {
+          Authorization: `Bearer 3D7D8EAFD50BA93F5060BF312202283DC82468E13353B1C92E8394D4BA8048DC`
+        }
+      };
+      this.axios
+        .post(apiURL, this.sendNotify, setting)
+        .then(response => {
+          Swal.fire({
+            title: "ส่งการแจ้งเตือนเรียบร้อย",
+            type: "success",
+            showConfirmButton: false,
+            timer: 1500
+          }).then(result => {
+            console.log("ok3");
+            this.updateNotify();
+          });
+        })
+        .catch(err => {
+          Swal.fire({
+            type: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          console.log(err);
+        });
+    },
     getData: function() {
       let setting = {
         headers: { Authorization: `${localStorage.tokenkey}` }
@@ -123,14 +164,66 @@ export default {
           )
         )
         .catch(err => {
-          console.log(err.response);
+          if (err.response.status == 401) {
+            Swal.fire({
+              type: "warning",
+              title: "เซสชั่นหมดอายุแล้ว",
+              text: "กรุณาเข้าสู่ระบบใหม่",
+              showConfirmButton: true
+            });
+            localStorage.clear();
+            this.$store.state.getApiData.tokenkey = null;
+          }
+          if (err.response.status == 404) {
+            Swal.fire({
+              type: "warning",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: true
+            });
+          }
         });
+    },
+    updateNotify: function() {
+      let apiURL = "http://localhost:1337/notification/update";
+      let setting = {
+        headers: { Authorization: `${localStorage.tokenkey}` }
+      };
+      this.axios
+        .post(apiURL, this.sendNotify.fcm.notification, setting)
+        .then(response => {
+          console.log("ok2");
+          this.getData();
+        })
+        .catch(err => {
+          Swal.fire({
+            type: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          console.log(err);
+        });
+    },
+    dialogSend: function() {
+      Swal.fire({
+        title: "ยืนยันการส่งการแจ้งเตือน",
+        text: "ต้องการส่งการแจ้งเตือนนี้ซ้ำอีกรอบหรือไม่?",
+        type: "warning",
+        showCancelButton: true,
+
+        cancelButtonText: "ยกเลิก",
+        confirmButtonText: "ยืนยัน"
+      }).then(result => {
+        if (result.value) {
+          this.notifiSend();
+          console.log("ok1");
+        }
+      });
     },
     dialogDel: function() {
       Swal.fire({
         title: "ยืนยันการลบข้อมูล?",
-        text:
-          "ต้องการลบข้อมูลการแจ้งเตือนนี้หรือไม่?",
+        text: "ต้องการลบข้อมูลการแจ้งเตือนนี้หรือไม่?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#F56C6C",

@@ -87,7 +87,6 @@
             />
           </v-flex>
 
-
           <!-- <v-flex xs12 md12>
             <v-text-field
               v-model="form.email"
@@ -98,7 +97,7 @@
               required
               type="email"
             ></v-text-field>
-          </v-flex> -->
+          </v-flex>-->
           <!-- <v-btn @click="clear">clear</v-btn> -->
         </v-layout>
       </v-container>
@@ -132,7 +131,7 @@ export default {
         }
       ],
       form: {
-        user_id: "",
+        id: "",
         prefix_name: "",
         first_name: "",
         last_name: "",

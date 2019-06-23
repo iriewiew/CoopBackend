@@ -131,6 +131,7 @@
         </v-layout>
       </v-container>
     </v-form>
+    {{form}}
   </v-app>
 </template>
 <script>
@@ -161,7 +162,7 @@ export default {
         }
       ],
       form: {
-        user_id: "",
+id:"",
         prefix_name: "",
         first_name: "",
         last_name: "",
@@ -265,6 +266,7 @@ export default {
           console.log(err);
         });
     },
+    
     getData: function() {
       let setting = {
         headers: { Authorization: `${localStorage.tokenkey}` }

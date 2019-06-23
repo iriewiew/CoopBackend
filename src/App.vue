@@ -18,7 +18,7 @@
         </v-toolbar>
 
         <v-content>
-          <v-container>
+          <v-container fluid>
             <transition name="fade" mode="out-in">
               <router-view/>
             </transition>

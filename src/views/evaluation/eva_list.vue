@@ -13,110 +13,133 @@
       </v-btn>
     </v-card-title>
 
-    <div>
-      <br>
-      <h2>ด้านของแบบประเมิน</h2>
-      <br>
-      <v-layout row>
-        <v-flex xs12>
-          <!-- <span v-show="!titileData">ไม่มีข้อมูล</span> -->
+    <v-container>
+      <div>
+        <br>
+        <h2>ด้านของแบบประเมิน</h2>
+        <br>
+        <v-layout row>
+          <v-flex xs12>
+            <span v-if="titileData.length === 0">
+              ไม่มีข้อมูล
+              <b>"ด้านของแบบประเมิน"</b> โปรดทำการ
+              <v-btn small flat @click="dialog = true">
+                <v-icon>add</v-icon>เพิ่มด้านของแบบประเมิน
+              </v-btn>
+            </span>
 
-          <div v-for="titile ,index in titileData">
-            <v-list-tile>
-              <v-list-tile-avatar>{{index+1}}.</v-list-tile-avatar>
+            <div v-for="titile ,index in titileData">
+              <v-list-tile>
+                <v-list-tile-avatar>
+                  <v-avatar color="blue lighten-4"    size="36px">
+                    <span class=" headline">{{index+1}}</span>
+                  </v-avatar>
+                </v-list-tile-avatar>
 
-              <v-list-tile-content>
-                <v-list-tile-title>{{titile.eva_titile_name}}</v-list-tile-title>
-                <v-list-tile-sub-title>ผลบรรลุ ร้อยละ {{titile.eva_titile_achieve_point}} คะแนน</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{titile.eva_titile_name}}</v-list-tile-title>
+                  <v-list-tile-sub-title>ผลบรรลุ ร้อยละ {{titile.eva_titile_achieve_point}} คะแนน</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-btn icon>
+                    <v-icon
+                      color="blue"
+                      @click="(form.id = titile.id ,form.eva_titile_name = titile.eva_titile_name,form.eva_titile_achieve_point = titile.eva_titile_achieve_point),dialogEdit = true"
+                    >create</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
                 <v-btn icon>
                   <v-icon
-                    color="blue"
-                    @click="(form.id = titile.id ,form.eva_titile_name = titile.eva_titile_name,form.eva_titile_achieve_point = titile.eva_titile_achieve_point),dialogEdit = true"
-                  >create</v-icon>
+                    color="red"
+                    @click="(selectedData.id = titile.id,selectedData.name = titile.eva_titile_name),dialogDel() "
+                  >delete_outline</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-              <v-btn icon>
-                <v-icon
-                  color="red"
-                  @click="(selectedData.id = titile.id,selectedData.name = titile.eva_titile_name),dialogDel() "
-                >delete_outline</v-icon>
-              </v-btn>
-              <v-list-tile-action>
-                <v-btn
-                  flat
-                  @click="(formList.eva_titile_name_id = titile.id,selectedData.name = titile.eva_titile_name),(dialogList = true)"
-                >
-                  <v-icon>add</v-icon>เพิ่มข้อประเมิน
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider></v-divider>
-          </div>
-        </v-flex>
-      </v-layout>
-      <br>
-      <br>
-      <h2>ข้อแบบประเมิน</h2>
-      <br>
-      <!-- {{byTitile}} -->
-      <v-layout row>
-        <v-flex xs12>
-          <div v-for="list, Titile ,index in byTitile">
-            <v-toolbar color="blue lighten-3">
-              <!-- <v-toolbar-side-icon></v-toolbar-side-icon> -->
+                <v-list-tile-action>
+                  <v-btn
+                    flat
+                    @click="(formList.eva_titile_name_id = titile.id,selectedData.name = titile.eva_titile_name),(dialogList = true)"
+                  >
+                    <v-icon>add</v-icon>เพิ่มข้อประเมิน
+                  </v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+              <v-divider></v-divider>
+            </div>
+          </v-flex>
+        </v-layout>
+        <br>
+        <br>
+        <div v-if="titileData.length > 0">
+          <h2>ข้อแบบประเมิน</h2>
+          <br>
+          <span v-if="listData.length === 0">
+            ไม่มีข้อมูล
+            <b>"ข้อแบบประเมิน"</b> โปรดทำการ
+            <b>+ เพิ่มข้อประเมิน</b>
+          </span>
 
-              <v-toolbar-title>{{index+1}}. {{Titile}}</v-toolbar-title>
+          <v-layout row>
+            <v-flex xs12>
+              <div v-for="list, Titile ,index in byTitile">
+                <v-toolbar color="pink lighten-5" flat>
+                  <!-- <v-toolbar-side-icon></v-toolbar-side-icon> -->
 
-              <v-spacer></v-spacer>
-            </v-toolbar>
+                  <v-toolbar-title>{{index+1}}. {{Titile}}</v-toolbar-title>
 
-            <v-list two-line>
-              <template>
-                <div v-for="data,index in list">
-                  <v-list-tile>
-                    <v-list-tile-avatar>{{index+1}}.</v-list-tile-avatar>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{data.eva_list}}</v-list-tile-title>
-                      <v-list-tile-sub-title>{{data.eva_point}} คะแนน</v-list-tile-sub-title>
-                    </v-list-tile-content>
-                    <v-list-tile-action>
-                      <v-btn icon>
-                        <v-icon
-                          color="blue"
-                          @click="(formList.id = data.id ,formList.eva_list_name = data.eva_list,formList.eva_point = data.eva_point),dialogListEdit = true"
-                        >create</v-icon>
-                      </v-btn>
-                    </v-list-tile-action>
-                    <v-list-tile-action>
-                      <v-btn
-                        icon
-                        @click="(selectedData.id = data.id,selectedData.name = data.eva_list),dialogListDel() "
-                      >
-                        <v-icon color="red">delete_outline</v-icon>
-                      </v-btn>
-                    </v-list-tile-action>
-                  </v-list-tile>
-                  <v-divider></v-divider>
-                </div>
-                <!-- <v-list-tile>
+                <v-list two-line>
+                  <template>
+                    <div v-for="data,index in list">
+                      <v-list-tile>
+                                    <v-list-tile-avatar>
+                  <v-avatar color="pink lighten-4"    size="36px">
+                    <span class=" headline">{{index+1}}</span>
+                  </v-avatar>
+                </v-list-tile-avatar>
+
+                        <v-list-tile-content>
+                          <v-list-tile-title>{{data.eva_list}}</v-list-tile-title>
+                          <v-list-tile-sub-title>{{data.eva_point}} คะแนน</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                        <v-list-tile-action>
+                          <v-btn icon>
+                            <v-icon
+                              color="blue"
+                              @click="(formList.id = data.id ,formList.eva_list_name = data.eva_list,formList.eva_point = data.eva_point),dialogListEdit = true"
+                            >create</v-icon>
+                          </v-btn>
+                        </v-list-tile-action>
+                        <v-list-tile-action>
+                          <v-btn
+                            icon
+                            @click="(selectedData.id = data.id,selectedData.name = data.eva_list),dialogListDel() "
+                          >
+                            <v-icon color="red">delete_outline</v-icon>
+                          </v-btn>
+                        </v-list-tile-action>
+                      </v-list-tile>
+                      <v-divider></v-divider>
+                    </div>
+                    <!-- <v-list-tile>
                   <v-list-tile-content></v-list-tile-content>
                   <v-list-tile-action>
                     <v-btn flat>
                       <v-icon>add</v-icon>เพิ่มข้อประเมิน
                     </v-btn>
                   </v-list-tile-action>
-                </v-list-tile>-->
-              </template>
-            </v-list>
+                    </v-list-tile>-->
+                  </template>
+                </v-list>
 
-            <br>
-          </div>
-        </v-flex>
-      </v-layout>
-    </div>
+                <br>
+              </div>
+            </v-flex>
+          </v-layout>
+        </div>
+      </div>
+    </v-container>
     <v-layout row justify-center>
       <v-dialog v-model="dialog" persistent max-width="800px">
         <v-card>
@@ -151,7 +174,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" round flat @click="(form.eva_titile_name='',form.eva_titile_achieve_point=''),dialog = false,$validator.reset();">ยกเลิก</v-btn>
+            <v-btn
+              color="red"
+              round
+              flat
+              @click="(form.eva_titile_name='',form.eva_titile_achieve_point=''),dialog = false,$validator.reset();"
+            >ยกเลิก</v-btn>
             <!-- <v-btn color="green" flat @click="saveData()">บันทึก</v-btn> -->
 
             <v-btn v-if="!form.eva_titile_name" color="primary" round flat disabled>
@@ -200,7 +228,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" round flat @click="(form.eva_titile_name='',form.eva_titile_achieve_point=''),dialogEdit = false,$validator.reset();">ยกเลิก</v-btn>
+            <v-btn
+              color="red"
+              round
+              flat
+              @click="(form.eva_titile_name='',form.eva_titile_achieve_point=''),dialogEdit = false,$validator.reset();"
+            >ยกเลิก</v-btn>
             <!-- <v-btn color="green" flat @click="saveData()">บันทึก</v-btn> -->
 
             <v-btn v-if="!form.eva_titile_name" color="primary" round flat disabled>
@@ -252,7 +285,12 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" round flat @click="(formList.eva_list_name= '',formList.eva_point=''),dialogList = false,$validator.reset();">ยกเลิก</v-btn>
+            <v-btn
+              color="red"
+              round
+              flat
+              @click="(formList.eva_list_name= '',formList.eva_point=''),dialogList = false,$validator.reset();"
+            >ยกเลิก</v-btn>
             <!-- <v-btn color="green" flat @click="saveDataList">บันทึก</v-btn> -->
 
             <v-btn v-if="!formList.eva_list_name" color="primary" round flat disabled>
@@ -304,7 +342,12 @@
           <!-- {{formList}} -->
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" round flat @click="(formList.eva_list_name= '',formList.eva_point=''),dialogListEdit = false,$validator.reset();">ยกเลิก</v-btn>
+            <v-btn
+              color="red"
+              round
+              flat
+              @click="(formList.eva_list_name= '',formList.eva_point=''),dialogListEdit = false,$validator.reset();"
+            >ยกเลิก</v-btn>
             <!-- <v-btn color="green" flat @click="saveDataList">บันทึก</v-btn> -->
 
             <v-btn v-if="!formList.eva_list_name" color="primary" round flat disabled>

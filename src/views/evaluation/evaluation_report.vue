@@ -31,6 +31,39 @@
         <span>เพิ่มข้อมูล</span>
       </v-tooltip>-->
     </v-card-title>
+    <v-menu offset-y max-height="80%">
+      <template v-slot:activator="{ on }">
+        <div>
+          <v-layout align-center justify-end row fill-height>
+            <v-flex xs12 sm4 v-on="on">
+              <v-text-field
+                v-if="filterShow == 'แสดงทั้งหมด'"
+                prepend-icon="filter_list"
+                v-model="filterShow"
+              ></v-text-field>
+              <v-text-field
+                v-else
+                prepend-icon="filter_list"
+                v-model="filterShow"
+                append-icon="close"
+                @click:append="filterShow = 'แสดงทั้งหมด',search= null"
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+        </div>
+      </template>
+      <div>
+        <v-list v-for="data  in years">
+          <v-list-tile @click="(search = data,filterShow= 'ปีการศึกษา ' + data)">
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <b>ปีการศึกษา {{data}}</b>
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </div>
+    </v-menu>
     <v-data-table
       :headers="headers"
       :items="data"
@@ -48,18 +81,22 @@
           <br>
           เวลา {{ props.item.event_start }} - {{ props.item.event_end }} น.
         </td>
-        <!-- 
         <td class="text-xs-left">
-        นักศึกษา 10 คน / คณาจารย์ 10 ท่าน
-        </td>-->
+          <v-chip outline color="primary">ปีการศึกษา {{ props.item.event_year }}</v-chip>
+        </td>
+                <td class="text-xs-left">
+          <v-chip outline color="primary">ภาคเรียนที่ {{ props.item.event_term }}</v-chip>
+        </td>
         <td class="text-xs-right">
-       <a :href="'//'+url +'/'+'?id='+props.item.id +'&eva_id='+props.item.eva_id "  target="_blank"> 
-            <v-btn flat icon color="gray"
-            >
+          <a
+            :href="'//'+url +'/'+'?id='+props.item.id +'&eva_id='+props.item.eva_id "
+            target="_blank"
+          >
+            <v-btn flat icon color="gray">
               <v-icon>notes</v-icon>
             </v-btn>
-        </a> 
-            <!-- v-bind:to="{name: 'evaluationReportDetail', params: {eventID: props.item.id}}" -->
+          </a>
+          <!-- v-bind:to="{name: 'evaluationReportDetail', params: {eventID: props.item.id}}" -->
           <!-- <v-btn
             flat
             icon
@@ -67,7 +104,7 @@
 v-bind:to="{name: 'evaluationReportDetail', params: {eventID: props.item.id,evaID: props.item.eva_id}}" 
           >
             <v-icon>note</v-icon>
-          </v-btn> -->
+          </v-btn>-->
         </td>
       </template>
       <template v-slot:no-results>
@@ -93,6 +130,7 @@ export default {
       search: "",
       url: "localhost/coopApi",
       searchShow: true,
+      filterShow: "แสดงทั้งหมด",
       data: [],
       rowsPerPageItems: [9, 18, 27, 32, 99],
       pagination: {
@@ -110,7 +148,8 @@ export default {
         },
         { text: "รายชื่อกิจกรรม", value: "event_name" },
         { text: "วันที่ดำเนินการ", value: "event_date" },
-
+        { text: "", value: "event_year" },
+        { text: "", value: "event_term" },
         // { text: "จำนวนผู้เข้าร่วม",value: "status" },
 
         { text: "ผลการรายงาน", align: "right", value: "null", sortable: false }
@@ -187,6 +226,15 @@ export default {
     },
     addButton: function() {
       this.$router.push("/event/add");
+    }
+  },
+  computed: {
+    years() {
+      const year = new Date().getFullYear() + 543;
+      return Array.from(
+        { length: year - 2558 },
+        (value, index) => 2559 + index
+      );
     }
   }
 };

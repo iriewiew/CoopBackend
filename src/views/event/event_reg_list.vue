@@ -35,7 +35,7 @@
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn icon color="gray" v-on="on" @click="addMajorButton">
+          <v-btn icon color="gray" v-on="on" @click>
             <v-icon>vertical_align_bottom</v-icon>
           </v-btn>
         </template>
@@ -65,14 +65,26 @@
         </div>
       </template>
       <div>
-        <v-list v-for="faculty  in facultyData">
-          <v-list-tile @click="(search = faculty.faculty_name,filterShow=faculty.faculty_name)">
+        <v-list v-for="majorlist, Faculty  in byTitile">
+          <v-list-tile @click="(search = Faculty,filterShow=Faculty)">
             <v-list-tile-content>
               <v-list-tile-title>
-                <b>{{faculty.faculty_name}}</b>
+                <b>{{Faculty}}</b>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+
+          <v-list-tile
+            @click="search = data.major_name, filterShow = data.major_name"
+            v-for="data in majorlist"
+          >
+            <v-list-tile-avatar></v-list-tile-avatar>
+
+            <v-list-tile-content>
+              <v-list-tile-title>{{data.major_name}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-divider></v-divider>
         </v-list>
       </div>
     </v-menu>
@@ -86,12 +98,13 @@
     >
       <template v-slot:items="props">
         <td>
-          <v-icon>face</v-icon>
+          <b>{{ props.item.user_id.user_id }}</b>
         </td>
         <td
-
           class="text-xs-left"
         >{{ props.item.user_id.prefix_name }} {{ props.item.user_id.first_name }} {{ props.item.user_id.last_name }}</td>
+        <td class="text-xs-left">{{ props.item.major_id.major_name }}</td>
+
         <td class="text-xs-left">{{ props.item.faculty_id.faculty_name }}</td>
 
         <td class="text-xs-center">
@@ -142,6 +155,7 @@
         </td>
       </template>
     </v-data-table>
+    {{majorData}}
   </v-app>
 </template>
 
@@ -151,7 +165,7 @@ export default {
   mounted() {
     this.getData();
     this.getEventData();
-    this.getFacultyData();
+    this.getMajorData();
   },
   data() {
     return {
@@ -169,24 +183,30 @@ export default {
       selectedData: { id: "", name: "", status: "" },
       headers: [
         {
-          text: "",
+          text: "#",
           align: "left",
           sortable: false,
           value: "user_id.last_name"
         },
         { text: "รายชื่อ", value: "user_id.first_name" },
+        { text: "สาขา", value: "major_id.major_name" },
         { text: "คณะ", value: "faculty_id.faculty_name" },
-        { text: "ตำแหน่ง", value: "user_id.role_name" },
+        { text: "ตำแหน่ง", align: "center", value: "user_id.role_name" },
 
-        { text: "การประเมิน", value: "eva_status" },
+        { text: "การประเมิน", align: "center", value: "eva_status" },
         // { text: "สถานะการเข้าร่วม", value: "status" },
-        { text: "จัดการ", align: "right", value: "null", sortable: false }
+        {
+          text: "จัดการ",
+          align: "right",
+          value: "user_id.user_id",
+          sortable: false
+        }
       ]
     };
   },
   methods: {
-    getFacultyData: function() {
-      let apiURL = "http://localhost:1337/faculty/datatable";
+    getMajorData: function() {
+      let apiURL = "http://localhost:1337/major/datatable";
       let setting = {
         headers: { Authorization: `${localStorage.tokenkey}` }
       };
@@ -194,7 +214,7 @@ export default {
         .get(apiURL, setting)
         .then(
           response => (
-            (this.facultyData = response.data.data), (this.isLoading = false)
+            (this.majorData = response.data.data), (this.isLoading = false)
           )
         )
         .catch(err => {
@@ -322,12 +342,18 @@ export default {
     backButton: function() {
       this.$router.push("/event_report");
     }
-    // addMajorButton: function() {
-    //   this.$router.push({
-    //     name: "facultyMajorAdd",
-    //     params: { facultyID: this.$route.params.facultyID }
-    //   });
-    // }
+  },
+  computed: {
+    byTitile() {
+      return this.majorData.reduce((acc, data) => {
+        (acc[data.faculty_id.faculty_name] =
+          acc[data.faculty_id.faculty_name] || []).push({
+          major_name: data.major_name
+        });
+
+        return acc;
+      }, {});
+    }
   }
 };
 </script>

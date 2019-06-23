@@ -116,6 +116,11 @@ export default new Router({
       component: () => import("./views/event/detail.vue")
     },
     {
+      path: "/event/:eventID/qrcode",
+      name: "qrCode",
+      component: () => import("./views/event/qr.vue")
+    },
+    {
       path: "/evaluation",
       name: "evaluation",
       component: () => import("./views/evaluation.vue")

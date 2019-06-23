@@ -43,8 +43,11 @@
           <v-icon>event</v-icon>
         </td>
         <td width="35%" class="text-xs-left">{{ props.item.event_name }}</td>
-        <td class="text-xs-left"><b>{{ props.item.event_date | moment("DD MMMM YYYY")}}</b><br>เวลา {{ props.item.event_start }} - {{ props.item.event_end }} น.</td>
-
+        <td class="text-xs-left">
+          <b>{{ props.item.event_date | moment("DD MMMM YYYY")}}</b>
+          <br>
+          เวลา {{ props.item.event_start }} - {{ props.item.event_end }} น.
+        </td>
 
         <td class="text-xs-left">
           <v-chip v-if="props.item.status == 1" outline color="green">เปิด</v-chip>
@@ -54,6 +57,11 @@
         <td class="text-xs-left">
           <v-chip v-if="props.item.event_eva_status == 1" outline color="green">เปิด</v-chip>
           <v-chip v-else outline color="red">ปิด</v-chip>
+        </td>
+        <td class="text-xs-right">
+          <v-btn flat icon v-bind:to="{name: 'qrCode', params: {eventID: props.item.id}}">
+            <v-icon>mdi-qrcode-scan</v-icon>
+          </v-btn>
         </td>
         <td class="text-xs-right">
           <v-btn
@@ -113,8 +121,10 @@ export default {
         },
         { text: "รายชื่อกิจกรรม", value: "event_name" },
         { text: "วันที่ดำเนินการ", value: "event_date" },
-        { text: "สถานะการลงทะเบียน", value: "status" },
-        { text: "สถานะการประเมิน", value: "event_eva_staus" },
+        { text: "การลงทะเบียน", value: "status" },
+        { text: "การประเมิน", value: "event_eva_staus" },
+        { text: "รับ qr-code", sortable: false },
+
         { text: "จัดการ", align: "right", value: "null", sortable: false }
       ]
     };
@@ -132,7 +142,23 @@ export default {
           )
         )
         .catch(err => {
-          console.log(err.response);
+          if (err.response.status == 401) {
+            Swal.fire({
+              type: "warning",
+              title: "เซสชั่นหมดอายุแล้ว",
+              text: "กรุณาเข้าสู่ระบบใหม่",
+              showConfirmButton: true
+            });
+            localStorage.clear();
+            this.$store.state.getApiData.tokenkey = null;
+          }
+          if (err.response.status == 404) {
+            Swal.fire({
+              type: "warning",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: true
+            });
+          }
         });
     },
     dialogDel: function() {
