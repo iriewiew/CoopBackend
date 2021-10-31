@@ -12,7 +12,7 @@
     "@chenfengyuan/vue-qrcode": "^1.0.0",
     "axios": "^0.18.0",
     "buefy": "^0.7.4",
-    "chart.js": "^2.8.0",
+    "chart.js": "^2.9.4",
     "core-js": "^2.6.5",
     "fusioncharts": "^3.13.5-sr.1",
     "jspdf": "^1.5.3",
