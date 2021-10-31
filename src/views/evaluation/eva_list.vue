@@ -162,8 +162,8 @@
                   <v-text-field
                     label="ผลบรรลุ (ร้อยละ)"
                     v-model="form.eva_titile_achieve_point"
-                    v-validate="'required|max:3|numeric'"
-                    :counter="3"
+                    v-validate="'required|max:2|numeric'"
+                    :counter="2"
                     :error-messages="errors.collect('eva_titile_achieve_point')"
                     data-vv-name="eva_titile_achieve_point"
                     required
@@ -216,7 +216,7 @@
                   <v-text-field
                     label="ผลบรรลุ (ร้อยละ)"
                     v-model="form.eva_titile_achieve_point"
-                    v-validate="'required|max:3|numeric'"
+                    v-validate="'required|max_value:100|numeric'"
                     :counter="3"
                     :error-messages="errors.collect('eva_titile_achieve_point')"
                     data-vv-name="eva_titile_achieve_point"
@@ -426,7 +426,7 @@ export default {
             required: () => "โปรดกรอกคะแนน",
             alpha: "ไม่ควรใช้อักขระพิเศษ",
             numeric: "ตัวเลขเท่านั้น",
-            max: "คะแนนไม่ควรเกิน 3 หลัก"
+            max_value: "คะแนนไม่ควรเกิน 100 คะแนน"
             // custom messages
           }
         }

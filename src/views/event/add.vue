@@ -30,8 +30,8 @@
             <v-text-field
               v-model="form.event_name"
               label="ชื่อกิจกรรม"
-              v-validate="'required|max:255'"
-              :counter="255"
+              v-validate="{required:true,max:150,regex:/^[A-Za-z0-9ก-๙]+$/}"
+              :counter="150"
               :error-messages="errors.collect('event_name')"
               data-vv-name="event_name"
               required
@@ -121,7 +121,7 @@
               required
             ></v-textarea>
           </v-flex>
-          <br>
+          <br />
           <!-- <v-btn @click="clear">clear</v-btn> -->
           <v-toolbar flat>
             <v-card-title>
@@ -131,7 +131,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
 
-          <v-flex xs12>
+          <v-flex xs6>
             <v-text-field
               v-model="form.event_limit"
               label="จำนวนผู้เข้าร่วม"
@@ -142,8 +142,20 @@
               required
             ></v-text-field>
           </v-flex>
-          <v-flex xs12>
-            <v-select
+          <v-flex xs6>
+            <v-text-field
+              v-model="form.eva_achieve_point"
+              label="ผลบรรลุการเข้าร่วม (ร้อยละ)"
+              v-validate="'required|max:3|numeric'"
+              :counter="3"
+              :error-messages="errors.collect('eva_achieve_point')"
+              data-vv-name="eva_achieve_point"
+              required
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs6>
+          <v-select
               item-text="eva_name"
               item-value="id"
               v-model="form.eva_id"
@@ -155,20 +167,7 @@
               required
             />
           </v-flex>
-          <v-flex xs12>
-            <v-select
-              item-text="name"
-              item-value="id"
-              v-model="form.status"
-              :items="title"
-              label="สถานะกิจกรรม"
-              v-validate="'required'"
-              :error-messages="errors.collect('status')"
-              data-vv-name="status"
-              required
-            />
-          </v-flex>
-          <v-flex xs12>
+          <v-flex 6>
             <v-select
               item-text="name"
               item-value="id"
@@ -181,6 +180,7 @@
               required
             />
           </v-flex>
+
         </v-layout>
       </v-container>
     </v-form>
@@ -195,6 +195,7 @@ export default {
   },
   data() {
     return {
+      myDate: new Date().toISOString().slice(0, 10),
       title: [
         { name: "ปิดการลงทะเบียน", id: 0 },
         { name: "เปิดให้ลงทะเบียน", id: 1 }
@@ -202,7 +203,7 @@ export default {
       term: [
         { name: "ภาคเรียนที่ 1", id: 1 },
         { name: "ภาคเรียนที่ 2", id: 2 },
-        // { name: "ภาคเรียนที่ 3", id: 3 }
+        { name: "ภาคเรียนที่ 3", id: 3 }
       ],
       eva_title: [
         { name: "ปิดการประเมินกิจกรรม", id: 0 },
@@ -224,16 +225,17 @@ export default {
         event_term: "",
         event_place: "",
         event_limit: "",
+        eva_achieve_point: "",
         eva_id: "",
         event_eva_status: "",
-        status: ""
+        status: 1
       },
       dictionary: {
         custom: {
           event_name: {
             required: () => "โปรดกรอกชื่อกิจกรรม",
-            alpha: "ไม่ควรใช้อักขระพิเศษ",
-            max: "จำนวนอักขระไม่ควรเกิน 255 ตัวอักษร"
+            regex: "ไม่ควรใช้อักขระพิเศษ",
+            max: "จำนวนอักขระไม่ควรเกิน 150 ตัวอักษร"
 
             // custom messages
           },
@@ -282,6 +284,13 @@ export default {
             required: () => "โปรดกรอกจำนวนผู้เข้าร่วม",
             numeric: "จำนวนผู้เข้าร่วมควรเป็นตัวเลขเท่านั้น"
             // custom messages
+          },
+          eva_achieve_point: {
+            required: () => "โปรดกรอกคะแนน",
+            alpha: "ไม่ควรใช้อักขระพิเศษ",
+            numeric: "ตัวเลขเท่านั้น",
+            max: "คะแนนไม่ควรเกิน 3 หลัก"
+            // custom messages
           }
         }
       }
@@ -324,12 +333,21 @@ export default {
           });
         })
         .catch(err => {
-          Swal.fire({
-            type: "error",
-            title: "เกิดข้อผิดพลาด",
-            showConfirmButton: false,
-            timer: 1500
-          });
+          if (err.response.status == 500) {
+            Swal.fire({
+              type: "warning",
+              title: "มีการจัดกิจกรรมในวันนี้แล้ว",
+              text: "โปรดตรวจสอบและลองใหม่อีกครั้ง",
+              showConfirmButton: true
+            });
+          } else {
+            Swal.fire({
+              type: "error",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
           console.log(err);
         });
     },

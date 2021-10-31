@@ -60,7 +60,7 @@ export default {
         .get(apiURL + getID + view, setting)
         .then(
           response => (
-            (this.form = response.data.data), (this.isLoading = false)
+            (this.form = response.data.data[0]), (this.isLoading = false)
           )
         )
         .catch(err => {

@@ -29,7 +29,7 @@
           <v-text-field
             v-model="form.faculty_name"
             label="ชื่อคณะ"
-            v-validate="'required|'"
+            v-validate="{required:true,regex:/^[A-Za-z0-9ก-๙]+$/}"
             :error-messages="errors.collect('faculty_name')"
             data-vv-name="faculty_name"
             required
@@ -55,7 +55,7 @@ export default {
         custom: {
           faculty_name: {
             required: () => "โปรดกรอกชื่อคณะ",
-            alpha: "ไม่ควรใช้อักขระพิเศษ"
+            regex: "ไม่ควรใช้อักขระพิเศษ"
             // custom messages
           }
         }
@@ -83,13 +83,22 @@ export default {
             console.log(response);
           });
         })
-        .catch(err => {
-          Swal.fire({
-            type: "error",
-            title: "เกิดข้อผิดพลาด",
-            showConfirmButton: false,
-            timer: 1500
-          });
+       .catch(err => {
+          if (err.response.status == 500) {
+            Swal.fire({
+              type: "warning",
+              title: "มีข้อมูลนี้อยู่ในระบบแล้ว",
+              text: "โปรดตรวจสอบและลองใหม่อีกครั้ง",
+              showConfirmButton: true
+            });
+          } else {
+            Swal.fire({
+              type: "error",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
           console.log(err);
         });
     },

@@ -42,12 +42,12 @@
               required
             ></v-text-field>
           </v-flex>
-          <v-flex xs12 md12 @click="sendBtn=true">
+          <v-flex xs12 md12 @click="sendBtn=true,DateQuery=eventData[0].todayDate">
             <v-select
               item-text="event_name"
               item-value="event_name"
               v-model="form.event"
-              :items="eventData"
+              :items="filteredResources"
               label="เลือกกิจกรรม"
               v-validate="'required'"
               :error-messages="errors.collect('event')"
@@ -81,36 +81,38 @@
         </v-layout>
       </v-container>
     </v-form>
-    <br>
-<v-container>
-    <v-layout row>
-      <v-flex xs12>
-        <v-card>
-          <v-toolbar color="pink" dark>
-            <v-toolbar-side-icon></v-toolbar-side-icon>
-            <v-toolbar-title>การแจ้งเตือน</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-          <v-list two-line>
-            <template>
-              <v-list-tile :key="index" avatar ripple @click>
-                <v-list-tile-content>
-                  <v-list-tile-title>CoopApp</v-list-tile-title>
-                  <v-list-tile-sub-title class="text--primary">
-                    <b>{{sendNotify.fcm.notification.title}}</b>
-                  </v-list-tile-sub-title>
-                  <v-list-tile-sub-title>{{sendNotify.fcm.notification.body}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-list-tile-action-text>ตอนนี้</v-list-tile-action-text>
-                </v-list-tile-action>
-              </v-list-tile>
-            </template>
-          </v-list>
-        </v-card>
-      </v-flex>
-    </v-layout>
-</v-container>
+    <br />
+    <v-container>
+      <v-layout row>
+        <v-flex xs12>
+          <v-card>
+            <v-toolbar color="pink" dark>
+              <v-toolbar-side-icon></v-toolbar-side-icon>
+              <v-toolbar-title>การแจ้งเตือน</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-list two-line>
+              <template>
+                <v-list-tile :key="index" avatar ripple @click>
+                  <v-list-tile-content>
+                    <v-list-tile-title>CoopApp</v-list-tile-title>
+                    <v-list-tile-sub-title class="text--primary">
+                      <b>{{sendNotify.fcm.notification.title}}</b>
+                    </v-list-tile-sub-title>
+                    <v-list-tile-sub-title>{{sendNotify.fcm.notification.body}}</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-list-tile-action>
+                    <v-list-tile-action-text>ตอนนี้</v-list-tile-action-text>
+                  </v-list-tile-action>
+                </v-list-tile>
+              </template>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+    </v-container>
+
   </v-app>
 </template>
 <script>
@@ -122,6 +124,7 @@ export default {
   },
   data() {
     return {
+      DateQuery: '',
       sendBtn: true,
       list: {
         name: ""
@@ -194,9 +197,12 @@ export default {
         });
     },
     notifiSend: function() {
-      let apiURL = "https://2542e143-54b2-497e-b818-91fbffc77642.pushnotifications.pusher.com/publish_api/v1/instances/2542e143-54b2-497e-b818-91fbffc77642/publishes";
+      let apiURL =
+        "https://2542e143-54b2-497e-b818-91fbffc77642.pushnotifications.pusher.com/publish_api/v1/instances/2542e143-54b2-497e-b818-91fbffc77642/publishes";
       let setting = {
-        headers: { Authorization: `Bearer 3D7D8EAFD50BA93F5060BF312202283DC82468E13353B1C92E8394D4BA8048DC` }
+        headers: {
+          Authorization: `Bearer 3D7D8EAFD50BA93F5060BF312202283DC82468E13353B1C92E8394D4BA8048DC`
+        }
       };
       this.axios
         .post(apiURL, this.sendNotify, setting)
@@ -254,6 +260,17 @@ export default {
     },
     backButton: function() {
       this.$router.push("/notification");
+    }
+  },
+  computed: {
+    filteredResources() {
+      if (this.DateQuery) {
+        return this.eventData.filter(item => {
+          return item.event_date.startsWith(this.DateQuery);
+        });
+      } else {
+        return this.eventData;
+      }
     }
   }
 };

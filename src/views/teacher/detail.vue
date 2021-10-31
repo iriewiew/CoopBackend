@@ -136,7 +136,7 @@ export default {
         first_name: "",
         last_name: "",
         role_name: "teacher",
-        major_name: "",
+        major_name: 1,
         faculty_name: "",
         email: ""
       },

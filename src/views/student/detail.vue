@@ -116,6 +116,17 @@
               required
             />
           </v-flex>
+          <v-flex xs12>
+            <v-select
+              v-model="form.std_year"
+              :items="years"
+              label="ปีการศึกษา"
+              v-validate="'required'"
+              :error-messages="errors.collect('std_year')"
+              data-vv-name="std_year"
+              required
+            />
+          </v-flex>
           <!-- <v-flex xs12 md12>
             <v-text-field
               v-model="form.email"
@@ -126,12 +137,11 @@
               required
               type="email"
             ></v-text-field>
-          </v-flex> -->
+          </v-flex>-->
           <!-- <v-btn @click="clear">clear</v-btn> -->
         </v-layout>
       </v-container>
     </v-form>
-    {{form}}
   </v-app>
 </template>
 <script>
@@ -162,14 +172,15 @@ export default {
         }
       ],
       form: {
-id:"",
+        id: "",
         prefix_name: "",
         first_name: "",
         last_name: "",
         role_name: "student",
         major_name: "",
         faculty_name: "",
-        email: ""
+        email: "",
+        std_year: ""
       },
       dictionary: {
         attributes: {
@@ -207,6 +218,9 @@ id:"",
           email: {
             required: () => "โปรดกรอกอีเมล",
             email: "รูปแบบอีเมลไม่ถูกต้อง"
+          },
+          std_year: {
+            required: "โปรดเลือกปีการศึกษา"
           }
         }
       }
@@ -266,7 +280,7 @@ id:"",
           console.log(err);
         });
     },
-    
+
     getData: function() {
       let setting = {
         headers: { Authorization: `${localStorage.tokenkey}` }
@@ -330,6 +344,15 @@ id:"",
     },
     backButton: function() {
       this.$router.push("/student");
+    }
+  },
+  computed: {
+    years() {
+      const year = new Date().getFullYear() + 543;
+      return Array.from(
+        { length: year - 2558 },
+        (value, index) => 2559 + index
+      );
     }
   }
 };

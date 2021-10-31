@@ -1,14 +1,19 @@
 <template>
   <v-app>
-    <v-card-title>
-      <h1>การตั้งค่า</h1>
+    <v-toolbar flat>
+      <v-toolbar-items>
+        <v-btn flat icon @click="backButton();">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
+      </v-toolbar-items>
+      <v-card-title>
+        <h1>แก้ไขบัญชีผู้ใช้งาน</h1>
+        <v-spacer></v-spacer>
+      </v-card-title>
       <v-spacer></v-spacer>
-    </v-card-title>
-
-    <br>
+    </v-toolbar>
     <div>
       <v-container>
-        <h4>การตั้งค่าบัญชีผู้ใช้</h4>
         <br>
         <v-layout row>
           <v-flex xs2>
@@ -64,7 +69,7 @@
             <p style="text-align: left;">บัญชีผู้ใช้ :</p>
           </v-flex>
           <v-flex xs12>
-            <p v-show="userSetting" style="text-align: left;">{{$store.state.getApiData.username}}</p>
+            <p v-show="userSetting" style="text-align: left;">{{ruleForm.username}}</p>
           </v-flex>
           <v-flex xs2>
             <v-btn color="primary" round small flat dark @click="userSetting = !userSetting">
@@ -80,7 +85,7 @@
             <br>
             <v-text-field
               autofocus
-              v-model="ruleForm2.username"
+              v-model="ruleForm.username"
               label="ชื่อบัญชีผู้ใช้"
               v-validate="'required|max:255'"
               :error-messages="errors.collect('user_name')"
@@ -91,7 +96,7 @@
 
           <v-flex xs12>
             <v-text-field
-              v-model="ruleForm2.password"
+              v-model="ruleForm.password"
               label="รหัสผ่านใหม่"
               type="password"
               v-validate="'required|min:8'"
@@ -102,7 +107,7 @@
             ></v-text-field>
 
             <v-text-field
-              v-model="ruleForm2.confirmPassword"
+              v-model="ruleForm.confirmPassword"
               label="ยืนยันรหัสผ่าน"
               type="password"
               v-validate="'required|confirmed:password'"
@@ -170,7 +175,7 @@ export default {
     },
     getUserData: function() {
       let apiURL = "http://localhost:1337/api/users/";
-      let getID = localStorage.id;
+      let getID = this.$route.params.userID;
       let view = "/view";
       axios
         .get(apiURL + getID + view, {
@@ -192,7 +197,15 @@ export default {
             confirmButtonText: "บันทึก"
           }).then(result => {
             if (result.value) {
-              this.saveNameData();
+          Swal.fire({
+            title: "บันทึกข้อมูลเรียบร้อย",
+            type: "success",
+            showConfirmButton: false,
+            timer: 1500
+          }).then(result => {
+            console.log("ok3");
+            // this.getData();
+          });
             }
           });
           return;
@@ -208,7 +221,7 @@ export default {
         })
         .then(response => {
           Swal.fire({
-            title: "บันทึกข้อมูลเรียบร้อย",
+            title: "แก้ไขข้อมูลเรียบร้อย",
             type: "success",
             showConfirmButton: false,
             timer: 1500
@@ -252,30 +265,17 @@ export default {
     saveData: function() {
       let apiURL = "http://localhost:1337/api/users/update";
       this.axios
-        .post(apiURL, this.ruleForm2, {
+        .post(apiURL, this.ruleForm, {
           headers: { Authorization: `${localStorage.tokenkey}` }
         })
         .then(response => {
           console.log("ok2");
           Swal.fire({
             title: "แก้ไข ชื่อผู้ใช้กับรหัสผ่าน เรียบร้อย",
-            text: "ระบบจะทำการเข้าสู่ระบบใหม่",
             type: "success",
             showConfirmButton: true
           }).then(result => {
             console.log("ok3");
-            localStorage.clear();
-            this.$store.state.getApiData.tokenkey = null;
-            this.$store.state.getApiData.id = null;
-            this.$store.state.getApiData.name = null;
-            this.$store.state.getApiData.status = null;
-            this.$store.state.getApiData.username = null;
-            Swal.fire({
-              type: "success",
-              title: "ออกจากระบบเรียบร้อย",
-              showConfirmButton: false,
-              timer: 1500
-            });
           });
         })
         .catch(err => {
@@ -296,59 +296,27 @@ export default {
           }
           console.log(err);
         });
+    },
+    backButton: function() {
+      this.$router.push("/usermanage");
     }
   },
 
   data() {
     return {
       RuleData: [{ name: "Admin" }, { name: "Human resources" }],
-      dialogVisible: false,
-      headers: [
-        {
-          text: "#",
-          align: "center",
-          sortable: false,
-          value: "id"
-        },
-        {
-          text: "ชื่อบัญชีผู้ใช้",
-          value: "username",
-          align: "center"
-        },
-        {
-          text: "ชื่อผู้ใช้",
-          value: "name",
-          align: "center"
-        },
-        {
-          text: "ระดับ",
-          value: "status",
-          align: "center"
-        },
-        {
-          text: "จัดการ",
-          align: "center",
-          sortable: false
-        }
-      ],
+
       selectedData: { id: "", username: "", name: "" },
       desserts: [],
       nameShow: true,
       userSetting: true,
-      ruleForm2: {
-        id: localStorage.id,
-        username: localStorage.username,
-        password: "",
-        confirmPassword: ""
-      },
-      ruleForm3: {
-        name: "",
+
+      ruleForm: {
+        id: "",
         username: "",
-        status: "",
         password: "",
         confirmPassword: ""
       },
-      ruleForm: {},
       dictionary: {
         custom: {
           name: {

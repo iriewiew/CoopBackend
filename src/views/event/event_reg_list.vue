@@ -5,7 +5,7 @@
         <v-btn flat icon @click="backButton();">
           <v-icon>arrow_back</v-icon>
         </v-btn>
-        รายชื่อผู้เข้าร่วมกิจกรรม {{ eventData.event_name }}
+        รายชื่อผู้เข้าร่วมกิจกรรม 
       </h3>
       <v-spacer></v-spacer>
       <v-text-field
@@ -33,11 +33,47 @@
         <span>ค้นหาข้อมูล</span>
       </v-tooltip>
 
+     
+        <!-- <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            v-show="searchShow"
+            v-bind:to="{name: 'EventAddStu', params: {eventID: $route.params.eventID}}"
+            color="gray"
+          >
+            
+          </v-btn>
+        </template> -->
+      
+   
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn 
+            icon v-on="on" color="gray" ><v-icon>person_add</v-icon></v-btn>
+        </template>
+        <v-list>
+          <v-list-tile :key="index" v-bind:to="{name: 'EventAddStu', params: {eventID: $route.params.eventID}}">
+            <v-list-tile-title>นักศึกษา</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+        <v-list>
+          <v-list-tile :key="index1"  v-bind:to="{name: 'EventAddTeac', params: {eventID: $route.params.eventID}}">
+            <v-list-tile-title>คณาจารย์</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+
+
+
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn icon color="gray" v-on="on" @click>
-            <v-icon>vertical_align_bottom</v-icon>
-          </v-btn>
+          <a :href="'//'+url +'/'+'?id='+$route.params.eventID " target="_blank">
+            <v-btn icon color="gray" v-on="on">
+              <v-icon>vertical_align_bottom</v-icon>
+            </v-btn>
+          </a>
         </template>
         <span>ส่งออกข้อมูล</span>
       </v-tooltip>
@@ -155,7 +191,6 @@
         </td>
       </template>
     </v-data-table>
-    {{majorData}}
   </v-app>
 </template>
 
@@ -169,6 +204,7 @@ export default {
   },
   data() {
     return {
+      url: "localhost/coopApi/reg_list.php",
       search: "",
       searchShow: true,
       eventData: "",

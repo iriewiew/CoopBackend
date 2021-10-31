@@ -55,7 +55,7 @@
             <v-text-field
               v-model="form.first_name"
               label="ชื่อ"
-              v-validate="'required'"
+              v-validate="{required:true,regex:/^[A-Za-z0-9ก-๙]+$/}"
               :error-messages="errors.collect('first_name')"
               data-vv-name="first_name"
               required
@@ -65,7 +65,7 @@
             <v-text-field
               v-model="form.last_name"
               label="นามสกุล"
-              v-validate="'required'"
+              v-validate="{required:true,regex:/^[A-Za-z0-9ก-๙]+$/}"
               :error-messages="errors.collect('last_name')"
               data-vv-name="last_name"
               required
@@ -96,9 +96,12 @@
               required
               type="email"
             ></v-text-field>
-          </v-flex> -->
+          </v-flex>-->
           <!-- <v-btn @click="clear">clear</v-btn> -->
         </v-layout>
+        <br />
+        <br />
+**ระบบจะตั้งรหัสผ่านของผู้ใช้เริ่มต้นเป็น "1111111" (เลข 1 จำนวน 8 ตัวอักษร)
       </v-container>
     </v-form>
   </v-app>
@@ -132,9 +135,9 @@ export default {
         first_name: "",
         last_name: "",
         role_name: "teacher",
-        major_name: null,
+        major_name: 1,
         faculty_name: "",
-        email:""
+        email: ""
       },
       dictionary: {
         attributes: {
@@ -151,12 +154,13 @@ export default {
           },
           first_name: {
             required: () => "โปรดกรอกชื่อ",
-            alpha: "ไม่ควร"
+            regex: "ไม่ควรใช้อักขระพิเศษ"
 
             // custom messages
           },
           last_name: {
-            required: () => "โปรดกรอกนามสกุล"
+            required: () => "โปรดกรอกนามสกุล",
+            regex: "ไม่ควรใช้อักขระพิเศษ"
 
             // custom messages
           },
@@ -169,7 +173,7 @@ export default {
           selectMajor: {
             required: "โปรดเลือกสาขาวิชา"
           },
-          email:{
+          email: {
             required: () => "โปรดกรอกอีเมล",
             email: "รูปแบบอีเมลไม่ถูกต้อง"
           }
@@ -199,7 +203,7 @@ export default {
           });
         })
         .catch(err => {
-                 if (err.response.status == 500) {
+          if (err.response.status == 500) {
             Swal.fire({
               type: "warning",
               title: "มีรหัสคณาจารย์นี้อยู่ในระบบแล้ว",

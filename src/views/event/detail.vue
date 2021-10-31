@@ -23,7 +23,7 @@
       <h1></h1>
       <v-spacer></v-spacer>
     </v-card-title>
-   <v-form>
+    <v-form>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
@@ -121,7 +121,7 @@
               required
             ></v-textarea>
           </v-flex>
-          <br>
+          <br />
           <!-- <v-btn @click="clear">clear</v-btn> -->
           <v-toolbar flat>
             <v-card-title>
@@ -131,7 +131,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
 
-          <v-flex xs12>
+          <v-flex xs6>
             <v-text-field
               v-model="form.event_limit"
               label="จำนวนผู้เข้าร่วม"
@@ -142,7 +142,19 @@
               required
             ></v-text-field>
           </v-flex>
-          <v-flex xs12>
+          <v-flex xs6>
+            <v-text-field
+              v-model="form.eva_achieve_point"
+              label="ผลบรรลุการเข้าร่วม (ร้อยละ)"
+              v-validate="'required|max:3|numeric'"
+              :counter="3"
+              :error-messages="errors.collect('eva_achieve_point')"
+              data-vv-name="eva_achieve_point"
+              required
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs6>
             <v-select
               item-text="eva_name"
               item-value="id"
@@ -155,21 +167,9 @@
               required
             />
           </v-flex>
-          <v-flex xs12>
+          <v-flex 6>
             <v-select
-              item-text="name"
-              item-value="id"
-              v-model="form.status"
-              :items="title"
-              label="สถานะกิจกรรม"
-              v-validate="'required'"
-              :error-messages="errors.collect('status')"
-              data-vv-name="status"
-              required
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-select
+              v-if="form.event_date == form.todayDate"
               item-text="name"
               item-value="id"
               v-model="form.event_eva_status"
@@ -179,6 +179,19 @@
               :error-messages="errors.collect('event_eva_status')"
               data-vv-name="event_eva_status"
               required
+            />
+
+            <v-select
+              v-else
+              item-text="name"
+              item-value="id"
+              v-model="form.event_eva_status"
+              
+              label="กิจกรรมสิ้นสุดแล้ว"
+              v-validate="'required'"
+              :error-messages="errors.collect('event_eva_status')"
+              data-vv-name="event_eva_status"
+              disabled
             />
           </v-flex>
         </v-layout>
@@ -196,6 +209,7 @@ export default {
   },
   data() {
     return {
+
       title: [
         { name: "ปิดการลงทะเบียน", id: 0 },
         { name: "เปิดให้ลงทะเบียน", id: 1 }
@@ -216,17 +230,7 @@ export default {
       ],
       evaData: "",
       data: "",
-      form: {
-        event_name: "",
-        event_date: "",
-        event_start: "",
-        event_end: "",
-        event_detail: "",
-        event_place: "",
-        event_limit: "",
-        event_eva_status: "",
-        event_role: ""
-      },
+      form: "",
       dictionary: {
         custom: {
           event_name: {
@@ -282,7 +286,15 @@ export default {
           },
           event_limit: {
             required: () => "โปรดกรอกจำนวนผู้เข้าร่วม",
-            numeric: "จำนวนผู้เข้าร่วมควรเป็นตัวเลขเท่านั้น"
+            numeric: "จำนวนผู้เข้าร่วมควรเป็นตัวเลขเท่านั้น",
+            min: "ผู้ควรมีตั้งแต่ 1 คนขึ้นไป"
+            // custom messages
+          },
+          eva_achieve_point: {
+            required: () => "โปรดกรอกคะแนน",
+            alpha: "ไม่ควรใช้อักขระพิเศษ",
+            numeric: "ตัวเลขเท่านั้น",
+            max: "คะแนนไม่ควรเกิน 3 หลัก"
             // custom messages
           }
         }
@@ -317,7 +329,7 @@ export default {
         .get(apiURL + getID + view, setting)
         .then(
           response => (
-            (this.form = response.data.data), (this.isLoading = false)
+            (this.form = response.data.data[0]), (this.isLoading = false)
           )
         )
         .catch(err => {

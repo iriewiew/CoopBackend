@@ -55,7 +55,7 @@
             <v-text-field
               v-model="form.first_name"
               label="ชื่อ"
-              v-validate="'required'"
+              v-validate="{required:true,regex:/^[A-Za-z0-9ก-๙]+$/}"
               :error-messages="errors.collect('first_name')"
               data-vv-name="first_name"
               required
@@ -65,7 +65,7 @@
             <v-text-field
               v-model="form.last_name"
               label="นามสกุล"
-              v-validate="'required'"
+              v-validate="{required:true,regex:/^[A-Za-z0-9ก-๙]+$/}"
               :error-messages="errors.collect('last_name')"
               data-vv-name="last_name"
               required
@@ -99,7 +99,17 @@
               required
             />
           </v-flex>
-
+          <v-flex xs12>
+            <v-select
+              v-model="form.std_year"
+              :items="years"
+              label="ปีการศึกษา"
+              v-validate="'required'"
+              :error-messages="errors.collect('std_year')"
+              data-vv-name="std_year"
+              required
+            />
+          </v-flex>
           <!-- <v-flex xs12 md12>
             <v-text-field
               v-model="form.email"
@@ -110,9 +120,11 @@
               required
               type="email"
             ></v-text-field>
-          </v-flex> -->
+          </v-flex>-->
           <!-- <v-btn @click="clear">clear</v-btn> -->
         </v-layout>
+        <br />
+        <br />**ระบบจะตั้งรหัสผ่านของผู้ใช้เริ่มต้นเป็น "1111111" (เลข 1 จำนวน 8 ตัวอักษร)
       </v-container>
     </v-form>
   </v-app>
@@ -148,7 +160,8 @@ export default {
         role_name: "student",
         major_name: "",
         faculty_name: "",
-        email:""
+        email: "",
+        std_year: ""
       },
       dictionary: {
         attributes: {
@@ -165,13 +178,13 @@ export default {
           },
           first_name: {
             required: () => "โปรดกรอกชื่อ",
-            alpha: "ไม่ควร"
+            regex: "ไม่ควรใช้อักขระพิเศษ"
 
             // custom messages
           },
           last_name: {
-            required: () => "โปรดกรอกนามสกุล"
-
+            required: () => "โปรดกรอกนามสกุล",
+            regex: "ไม่ควรใช้อักขระพิเศษ"
             // custom messages
           },
           selectPrefix: {
@@ -183,9 +196,12 @@ export default {
           selectMajor: {
             required: "โปรดเลือกสาขาวิชา"
           },
-          email:{
+          email: {
             required: () => "โปรดกรอกอีเมล",
             email: "รูปแบบอีเมลไม่ถูกต้อง"
+          },
+          std_year: {
+            required: "โปรดเลือกปีการศึกษา"
           }
         }
       }
@@ -275,6 +291,15 @@ export default {
     },
     backButton: function() {
       this.$router.push("/student");
+    }
+  },
+  computed: {
+    years() {
+      const year = new Date().getFullYear() + 543;
+      return Array.from(
+        { length: year - 2558 },
+        (value, index) => 2559 + index
+      );
     }
   }
 };

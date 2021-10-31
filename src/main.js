@@ -3,13 +3,18 @@ import "./plugins/vuetify";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-// import Buefy from "buefy";
-// import "buefy/dist/buefy.css";
+
 import "moment/locale/th";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import VeeValidate from 'vee-validate';
+
 import VueQrcode from '@chenfengyuan/vue-qrcode';
+import VueFusionCharts from 'vue-fusioncharts';
+import FusionCharts from 'fusioncharts/core';
+import FusionTheme from 'fusioncharts/themes/es/fusioncharts.theme.fusion'
+import Column2D from 'fusioncharts/viz/column2d';
+import Doughnut2D from 'fusioncharts/viz/doughnut2d';
 
 Vue.component(VueQrcode.name, VueQrcode);
 const config = {
@@ -28,7 +33,7 @@ const config = {
   validity: false,
   useConstraintAttrs: true
 };
-
+Vue.use(VueFusionCharts, FusionCharts, FusionTheme, Column2D, Doughnut2D);
 Vue.use(VeeValidate, config);
 Vue.use(VueAxios, axios);
 

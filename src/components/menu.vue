@@ -91,6 +91,14 @@
           <v-list-tile-title>รายงานผลการประเมินกิจกรรม</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
+            <v-list-tile to="/static">
+        <v-list-tile-action>
+          <v-icon>donut_large</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>รายงานสถิติการจัดกิจจกรม</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
       <span style=" color: #afafaf" class="text-sm">--- อื่นๆ ---</span>
       <v-list-tile to="/notification">
@@ -99,6 +107,15 @@
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>การแจ้งเตือนกิจกรรม</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <v-list-tile to="/usermanage">
+        <v-list-tile-action>
+          <v-icon>group</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>จัดการผู้ใช้งานระบบ</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
 

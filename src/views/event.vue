@@ -45,23 +45,53 @@
         <td width="35%" class="text-xs-left">{{ props.item.event_name }}</td>
         <td class="text-xs-left">
           <b>{{ props.item.event_date | moment("DD MMMM YYYY")}}</b>
-          <br>
+          <br />
           เวลา {{ props.item.event_start }} - {{ props.item.event_end }} น.
         </td>
 
         <td class="text-xs-left">
-          <v-chip v-if="props.item.status == 1" outline color="green">เปิด</v-chip>
+          <v-chip v-if="props.item.event_date == props.item.todayDate" outline color="green">เปิด</v-chip>
           <v-chip v-else outline color="red">ปิด</v-chip>
         </td>
 
         <td class="text-xs-left">
-          <v-chip v-if="props.item.event_eva_status == 1" outline color="green">เปิด</v-chip>
-          <v-chip v-else outline color="red">ปิด</v-chip>
+          <div v-if="props.item.event_date == props.item.todayDate">
+            <v-chip v-if="props.item.event_eva_status == 1" outline color="green">เปิด</v-chip>
+            <v-chip v-else outline color="red">ปิด</v-chip>
+          </div>
+          <div v-else>
+            <v-chip outline color="red">ปิด</v-chip>
+          </div>
         </td>
         <td class="text-xs-right">
           <v-btn flat icon v-bind:to="{name: 'qrCode', params: {eventID: props.item.id}}">
             <v-icon>mdi-qrcode-scan</v-icon>
           </v-btn>
+        </td>
+        <td class="text-xs-right">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" color="gray">
+                <v-icon>person_add</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-tile
+                :key="index"
+                v-bind:to="{name: 'EventAddStu', params: {eventID: props.item.id}}"
+              >
+                <v-list-tile-title>นักศึกษา</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+            <v-list>
+              <v-list-tile
+                :key="index1"
+                v-bind:to="{name: 'EventAddTeac', params: {eventID: props.item.id}}"
+              >
+                <v-list-tile-title>คณาจารย์</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
         </td>
         <td class="text-xs-right">
           <v-btn
@@ -124,7 +154,7 @@ export default {
         { text: "การลงทะเบียน", value: "status" },
         { text: "การประเมิน", value: "event_eva_staus" },
         { text: "รับ qr-code", sortable: false },
-
+        { text: "เพิ่มผู้เข้าร่วม", sortable: false },
         { text: "จัดการ", align: "right", value: "null", sortable: false }
       ]
     };

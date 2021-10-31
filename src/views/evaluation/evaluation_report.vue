@@ -172,58 +172,7 @@ export default {
           console.log(err.response);
         });
     },
-    dialogDel: function() {
-      Swal.fire({
-        title: "ยืนยันการลบข้อมูล?",
-        text:
-          "ต้องการลบข้อมูล " +
-          "' " +
-          this.selectedData.name +
-          " '" +
-          " หรือไม่?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#F56C6C",
 
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ยืนยัน"
-      }).then(result => {
-        if (result.value) {
-          this.deleteData();
-          console.log("ok1");
-        }
-      });
-    },
-    deleteData: function() {
-      let setting = {
-        headers: { Authorization: `${localStorage.tokenkey}` }
-      };
-      let apiURL = "http://localhost:1337/event/delete/";
-      let getID = this.selectedData;
-      this.axios
-        .post(apiURL, getID, setting)
-        .then(response => {
-          console.log("ok2");
-          Swal.fire({
-            title: "ลบข้อมูล " + this.selectedData.name + " เรียบร้อย",
-            type: "success",
-            showConfirmButton: false,
-            timer: 1500
-          }).then(result => {
-            console.log("ok3");
-            this.getData();
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          Swal.fire({
-            type: "error",
-            title: "เกิดข้อผิดพลาด",
-            showConfirmButton: false,
-            timer: 1500
-          });
-        });
-    },
     addButton: function() {
       this.$router.push("/event/add");
     }

@@ -26,7 +26,7 @@
     <v-form>
       <v-container>
         <v-layout row wrap>
-          <v-flex xs12>
+          <!-- <v-flex xs12>
             <v-text-field
               v-model="form.eva_number"
               label="รหัสแบบประเมิน"
@@ -36,7 +36,7 @@
               required
               disabled
             ></v-text-field>
-          </v-flex>
+          </v-flex> -->
           <v-flex xs12>
             <v-text-field
               v-model="form.eva_name"
@@ -59,17 +59,7 @@
               required
             ></v-textarea>
           </v-flex>
-          <v-flex xs12>
-            <v-text-field
-              v-model="form.eva_achieve_point"
-              label="ผลบรรลุการเข้าร่วม (ร้อยละ)"
-              v-validate="'required|max:3|numeric'"
-              :counter="3"
-              :error-messages="errors.collect('eva_achieve_point')"
-              data-vv-name="eva_achieve_point"
-              required
-            ></v-text-field>
-          </v-flex>
+
         </v-layout>
       </v-container>
     </v-form>

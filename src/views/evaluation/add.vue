@@ -26,7 +26,7 @@
     <v-form>
       <v-container>
         <v-layout row wrap>
-          <v-flex xs12>
+          <!-- <v-flex xs12>
             <v-text-field
               v-model="form.eva_number"
               label="รหัสแบบประเมิน"
@@ -36,7 +36,7 @@
               required
               disabled
             ></v-text-field>
-          </v-flex>
+          </v-flex> -->
           <v-flex xs12>
             <v-text-field
               v-model="form.eva_name"
@@ -59,17 +59,7 @@
               required
             ></v-textarea>
           </v-flex>
-                    <v-flex xs12>
-            <v-text-field
-              v-model="form.eva_achieve_point"
-              label="ผลบรรลุการเข้าร่วม (ร้อยละ)"
-              v-validate="'required|max:3|numeric'"
-              :counter="3"
-              :error-messages="errors.collect('eva_achieve_point')"
-              data-vv-name="eva_achieve_point"
-              required
-            ></v-text-field>
-          </v-flex>
+
         </v-layout>
       </v-container>
       <!-- <div v-for=" data in form.eva_data">
@@ -91,7 +81,7 @@ export default {
         eva_number: new Date().valueOf(),
         eva_detail: "",
         eva_created_name: this.$store.state.getApiData.name,
-        eva_achieve_point:"",
+        
         // eva_data: {
 
         //       name:"w",
@@ -151,13 +141,22 @@ export default {
             console.log(response);
           });
         })
-        .catch(err => {
-          Swal.fire({
-            type: "error",
-            title: "เกิดข้อผิดพลาด",
-            showConfirmButton: false,
-            timer: 1500
-          });
+       .catch(err => {
+          if (err.response.status == 500) {
+            Swal.fire({
+              type: "warning",
+              title: "มีข้อมูลนี้อยู่ในระบบแล้ว",
+              text: "โปรดตรวจสอบและลองใหม่อีกครั้ง",
+              showConfirmButton: true
+            });
+          } else {
+            Swal.fire({
+              type: "error",
+              title: "เกิดข้อผิดพลาด",
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
           console.log(err);
         });
     },

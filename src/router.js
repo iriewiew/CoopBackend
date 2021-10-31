@@ -24,8 +24,8 @@ export default new Router({
     {
       path: '/github/:eventID',
       name: "github",
-      beforeEnter() {location.href = 'http://github.com/:eventID'}
- },
+      beforeEnter() { location.href = 'http://github.com/:eventID' }
+    },
     {
       path: "/notification",
       name: "notification",
@@ -136,6 +136,16 @@ export default new Router({
       component: () => import("./views/event/event_reg_list.vue")
     },
     {
+      path: "/event_report/:eventID/add_stu",
+      name: "EventAddStu",
+      component: () => import("./views/event/event_add_stu.vue")
+    },
+    {
+      path: "/event_report/:eventID/add_teac",
+      name: "EventAddTeac",
+      component: () => import("./views/event/event_add_teac.vue")
+    },
+    {
       path: "/evaluation/add",
       name: "evaluationAdd",
       component: () => import("./views/evaluation/add.vue")
@@ -169,6 +179,26 @@ export default new Router({
       path: "/evaluation_report/:eventID/:evaID/",
       name: "evaluationReportDetail",
       component: () => import("./views/evaluation/eva_report_detail.vue")
+    },
+    {
+      path: "/static",
+      name: "staticReport",
+      component: () => import("./views/event/static.vue")
+    },
+    {
+      path: "/usermanage",
+      name: "usermanage",
+      component: () => import("./views/usermanage.vue")
+    },
+    {
+      path: "/usermanage/add",
+      name: "usermanageAdd",
+      component: () => import("./views/usermanage/add.vue")
+    },
+    {
+      path: "/usermanage/:userID/edit",
+      name: "usermanageEdit",
+      component: () => import("./views/usermanage/edit.vue")
     }
   ]
 });
