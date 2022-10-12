@@ -15,7 +15,7 @@
     "chart.js": "^2.8.0",
     "core-js": "^2.6.5",
     "fusioncharts": "^3.13.5-sr.1",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.5.1",
     "vee-validate": "^2.2.7",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
